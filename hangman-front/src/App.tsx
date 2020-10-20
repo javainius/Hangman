@@ -1,28 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import HangMan from  './gameComponents/HangMan';
 import axios from 'axios';
-import { Console } from 'console';
-
 
 function App() {
 
-  function wordInitial() {
-    var word;
-    axios.get('http://localhost:3000')
-    .then(res => {
-      console.log(res.data.hiddenWord);
-      word =  res.data.hiddenWord;
-    })
-    return word;
-  }
+  useEffect(() => {
+        axios.get('http://localhost:3000')
+        .then(res => {
+          setState(res.data)
+        })
+		// fetch("http://localhost:3000")
+		// 	.then((response) => response.json())
+		// 	.then((data) => {
+		// 		setWord(data.hiddenWord) // new
+		// 	})
+  }, [])
 
-  // setWord(newWord => newWord = wordObj.word);
-  const [word, setWord] = useState(() => wordInitial());
+  const [state, setState] = useState({
+    hiddenWord: "",
+    wordId: null,
+    numberOfWrongLetters: null,      
+    isGameStillGoing: true,
+    playerStatus: ""
+  });
+
+  function sendGuessing(){
+
+  }
 
   return (
     <div className="App">
-      {word}
+      {state.hiddenWord}<br/>
+      <input type="text" id="letter" name="letterField"></input>
+      <button onClick={sendGuessing}>Check letter</button>
     </div>
   );
 }

@@ -19,7 +19,8 @@ module.exports = function (wordId, wordState, guessedLetter, numberOfWrongLetter
     }
 
     return ({
-                "wordState": processedWordState,
+                "hiddenWord": processedWordState,
+                "wordId": wordId,
                 "numberOfWrongLetters": numberOfWrongLetters,
                 "isGameStillGoing": isGameStillGoing,
                 "playerStatus": playerStatus
