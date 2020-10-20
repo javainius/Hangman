@@ -9,9 +9,9 @@ router.get('/', (req,res)=> {
 });
 
 router.post('/', (req,res) => {
-    var { wordId, wordState, guessedLetter, numberOfGuessings } = req.body;
+    var { wordId, hiddenWord, guessingLetter, numberOfWrongLetters } = req.body;
 
-    res.send(getGameState(wordId, wordState, guessedLetter, numberOfGuessings));   
+    res.send(getGameState(wordId, hiddenWord, guessingLetter, numberOfWrongLetters));   
 });
 
 

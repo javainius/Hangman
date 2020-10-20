@@ -3,38 +3,42 @@ import './App.css';
 import axios from 'axios';
 
 function App() {
+  const [state, setState] = useState({
+    hiddenWord: "",
+    wordId: null,
+    numberOfWrongLetters: null,      
+    isGameStillGoing: true,
+    playerStatus: "",
+    guessingLetter: ""
+  });
 
   useEffect(() => {
         axios.get('http://localhost:3000')
         .then(res => {
           setState(res.data)
         })
-		// fetch("http://localhost:3000")
-		// 	.then((response) => response.json())
-		// 	.then((data) => {
-		// 		setWord(data.hiddenWord) // new
-		// 	})
   }, [])
 
-  const [state, setState] = useState({
-    hiddenWord: "",
-    wordId: null,
-    numberOfWrongLetters: null,      
-    isGameStillGoing: true,
-    playerStatus: ""
-  });
-
-  function sendGuessing(){
-
+  function handleLetterChange(e: any){
+    state.guessingLetter = e.target.value;
   }
 
   return (
     <div className="App">
       {state.hiddenWord}<br/>
-      <input type="text" id="letter" name="letterField"></input>
-      <button onClick={sendGuessing}>Check letter</button>
+      <input value={state.guessingLetter} type="text" id="letter"
+      onChange={handleLetterChange} name="letterField"></input>
+      <button onClick={sendGuessing}>Check</button>
     </div>
   );
+
+  function sendGuessing(){
+    axios.post('http://localhost:3000', state)
+      .then(res => {
+        setState(res.data)
+      });
+  }
+
 }
 
 export default App;
