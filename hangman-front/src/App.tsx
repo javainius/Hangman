@@ -13,8 +13,6 @@ function App() {
     guessingLetter: ""
   });
 
-  var alert;
-
   useEffect(() => {
         axios.get('http://localhost:3000')
         .then(res => {
@@ -23,11 +21,21 @@ function App() {
   }, [])
 
   function handleLetterChange(e: any){
-    state.guessingLetter = e.target.value;
+    setState({...state, guessingLetter: e.target.value})
   }
 
-  function formAlert(){
-    if(!state.isGameStillGoing){
+  function formGame(){
+    if(state.isGameStillGoing){
+      return(
+        <div>
+          <form onSubmit={sendGuessing}>
+            <input minLength={1} maxLength={1} value={state.guessingLetter} type="text"
+            onChange={handleLetterChange} name="letterField" ></input>
+          </form>
+        </div>
+      );
+    }
+    else {
       return (
       <div className="alert alert-dark" role="alert">
         {state.playerStatus}
@@ -38,24 +46,23 @@ function App() {
 
   return (
     <div className="App">
+      <h1>THE HANGMAN</h1>
+      <br/>
       <h2>{state.hiddenWord}</h2>
       <br/>
-      <input minLength={1} maxLength={1} value={state.guessingLetter} type="text" pattern="[A-Za-z]{3}"
-      onChange={handleLetterChange} name="letterField"></input>
-      <button onClick={sendGuessing}>Check</button>
+        {formGame()}
       <br/>
       <h3>moves left: {10 - state.numberOfWrongLetters}</h3>
-      {formAlert()}
+      <br/>
     </div>
   );
 
-  function sendGuessing(){
+  function sendGuessing(e: any){
+    e.preventDefault();
     axios.post('http://localhost:3000', state)
       .then(res => {
-        setState(res.data)
+        setState({ ...res.data, guessingLetter: ''})
       });
-
-
   }
 }
 
