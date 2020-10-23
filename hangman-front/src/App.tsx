@@ -5,18 +5,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [state, setState] = useState({
-    hiddenWord: "",
+    hiddenWord: '',
     wordId: null,
     numberOfWrongLetters: 0,      
     isGameStillGoing: true,
-    playerStatus: "",
-    guessingLetter: ""
+    playerStatus: '',
+    guessingLetter: '',
+    guessedLetters: ['']
   });
 
   useEffect(() => {
         axios.get('http://localhost:3000')
         .then(res => {
-          setState(res.data)
+          setState({...res.data, guessedLetters: ['']})
         })
   }, [])
 
@@ -54,15 +55,23 @@ function App() {
       <br/>
       <h3>moves left: {10 - state.numberOfWrongLetters}</h3>
       <br/>
+      <h4>Already guessed letters: <br/>
+      {state.guessedLetters.toString().replace(/,/g, ' ')}</h4>
+      <br/>
     </div>
   );
 
   function sendGuessing(e: any){
     e.preventDefault();
-    axios.post('http://localhost:3000', state)
-      .then(res => {
-        setState({ ...res.data, guessingLetter: ''})
-      });
+    if(state.guessingLetter !== '' && !state.guessedLetters.includes(state.guessingLetter)){
+      var guessedLetters = state.guessedLetters;
+      guessedLetters.push(state.guessingLetter);
+
+      axios.post('http://localhost:3000', state)
+        .then(res => {
+          setState({ ...res.data, guessingLetter: '', guessedLetters: guessedLetters})
+        });
+    }
   }
 }
 
